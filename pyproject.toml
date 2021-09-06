@@ -1,0 +1,51 @@
+[tool.poetry]
+name = "RolesFastAPI_poetry"
+version = "0.1.0"
+description = ""
+authors = ["Cristian Galvis <cjgalvisc@unal.edu.co>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+fastapi = "^0.68.1"
+alembic = "^1.7.1"
+passlib = "^1.7.4"
+inflect = "^5.3.0"
+tenacity = "^8.0.1"
+psycopg2-binary = "^2.9.1"
+uvicorn = "^0.15.0"
+pydantic = {extras = ["email"], version = "^1.8.2"}
+python-dotenv = "^0.19.0"
+python-jose = "^3.3.0"
+python-multipart = "^0.0.5"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+isort = "^5.9.3"
+black = "^21.8b0"
+SQLAlchemy-Utils = "^0.37.8"
+flake8 = "^3.9.2"
+pytest-cov = "^2.12.1"
+
+[tool.black]
+target-version = ['py39']
+include = '^/app'
+line-length = 79
+
+[tool.isort]
+use_parentheses = true
+reverse_relative = true
+include_trailing_comma = false
+lines_between_types = 0
+multi_line_output = 3
+line_length = 79
+
+[tool.coverage.run]
+include=['./*']
+
+[tool.coverage.report]
+show_missing=true
+include=['./*']
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
