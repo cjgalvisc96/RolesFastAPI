@@ -16,4 +16,4 @@ alembic upgrade head
 python app/scripts/create_initial_data_in_db.py
 
 #Start app
-uvicorn app.main:app --host 0.0.0.0 --port 8002 --reload
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload

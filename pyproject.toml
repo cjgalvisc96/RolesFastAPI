@@ -25,6 +25,7 @@ black = "^21.8b0"
 SQLAlchemy-Utils = "^0.37.8"
 flake8 = "^3.9.2"
 pytest-cov = "^2.12.1"
+requests = "^2.26.0"
 
 [tool.black]
 target-version = ['py39']
