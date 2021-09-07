@@ -1,6 +1,6 @@
 from typing import Any
 
-from fastapi import APIRouter, Depends, HTTPException, Security
+from fastapi import APIRouter, Depends, HTTPException, Security, status
 from pydantic.types import UUID4
 from sqlalchemy.orm import Session
 
@@ -24,7 +24,7 @@ def assign_user_role(
     user_role = crud.user_role.get_by_user_id(db, user_id=user_role_in.user_id)
     if user_role:
         raise HTTPException(
-            status_code=409,
+            status_code=status.HTTP_409_CONFLICT,
             detail="This user has already been assigned a role.",
         )
     user_role = crud.user_role.create(db, obj_in=user_role_in)
@@ -52,7 +52,7 @@ def update_user_role(
     user_role = crud.user_role.get_by_user_id(db, user_id=user_id)
     if not user_role:
         raise HTTPException(
-            status_code=404,
+            status_code=status.HTTP_404_NOT_FOUND,
             detail="There is no role assigned to this user",
         )
     user_role = crud.user_role.update(

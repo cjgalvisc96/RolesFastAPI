@@ -46,7 +46,7 @@ def get_current_user(
     else:
         authenticate_value = "Bearer"
     credentials_exception = HTTPException(
-        status_code=401,
+        status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": authenticate_value},
     )
@@ -60,7 +60,7 @@ def get_current_user(
     except (jwt.JWTError, ValidationError):
         logger.error("Error Decoding Token", exc_info=True)
         raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
+            status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate credentials",
         )
     user = crud.user.get(db, id=token_data.id)
@@ -68,7 +68,7 @@ def get_current_user(
         raise credentials_exception
     if security_scopes.scopes and not token_data.role:
         raise HTTPException(
-            status_code=401,
+            status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Not enough permissions",
             headers={"WWW-Authenticate": authenticate_value},
         )
@@ -77,7 +77,7 @@ def get_current_user(
         and token_data.role not in security_scopes.scopes
     ):
         raise HTTPException(
-            status_code=401,
+            status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Not enough permissions",
             headers={"WWW-Authenticate": authenticate_value},
         )
@@ -91,5 +91,7 @@ def get_current_active_user(
     ),
 ) -> models.User:
     if not crud.user.is_active(current_user):
-        raise HTTPException(status_code=400, detail="Inactive user")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Inactive user"
+        )
     return current_user

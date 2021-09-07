@@ -3,6 +3,7 @@ from typing import Any, List
 from fastapi import APIRouter, Body, Depends, HTTPException, Security
 from pydantic.types import UUID4
 from sqlalchemy.orm import Session
+from starlette import status
 
 from app import crud, models, schemas
 from app.api import deps, utils
@@ -57,7 +58,7 @@ def create_account(
     account = crud.account.get_by_name(db, name=account_in.name)
     if account:
         raise HTTPException(
-            status_code=409,
+            status_code=status.HTTP_409_CONFLICT,
             detail="An account with this name already exists",
         )
     account = crud.account.create(db, obj_in=account_in)
@@ -87,7 +88,7 @@ def update_account(
     if current_user.user_role.role.name == Role.ACCOUNT_ADMIN["name"]:
         if current_user.account_id != account_id:
             raise HTTPException(
-                status_code=401,
+                status_code=status.HTTP_401_UNAUTHORIZED,
                 detail=(
                     "This user does not have the permissions to "
                     "update this account"
@@ -96,7 +97,7 @@ def update_account(
     account = crud.account.get(db, id=account_id)
     if not account:
         raise HTTPException(
-            status_code=404,
+            status_code=status.HTTP_404_NOT_FOUND,
             detail="Account does not exist",
         )
     account = crud.account.update(db, db_obj=account, obj_in=account_in)
@@ -117,20 +118,20 @@ def add_user_to_account(
     account = crud.account.get(db, id=account_id)
     if not account:
         raise HTTPException(
-            status_code=404,
+            status_code=status.HTTP_404_NOT_FOUND,
             detail="Account does not exist",
         )
 
     if not utils.is_valid_uuid(user_id):
         raise HTTPException(
-            status_code=400,
+            status_code=status.HTTP_400_BAD_REQUEST,
             detail="Invalid user_id",
         )
 
     user = crud.user.get(db, id=user_id)
     if not user:
         raise HTTPException(
-            status_code=404,
+            status_code=status.HTTP_404_NOT_FOUND,
             detail="User does not exist",
         )
     user_in = schemas.UserUpdate(account_id=account_id)
@@ -156,7 +157,7 @@ def retrieve_users_for_account(
     account = crud.account.get(db, id=account_id)
     if not account:
         raise HTTPException(
-            status_code=404,
+            status_code=status.HTTP_404_NOT_FOUND,
             detail="Account does not exist",
         )
     account_users = crud.user.get_by_account_id(
@@ -186,7 +187,7 @@ def retrieve_users_for_own_account(
     account = crud.account.get(db, id=current_user.account_id)
     if not account:
         raise HTTPException(
-            status_code=404,
+            status_code=status.HTTP_404_NOT_FOUND,
             detail="Account does not exist",
         )
     account_users = crud.user.get_by_account_id(

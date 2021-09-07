@@ -1,6 +1,6 @@
 from typing import Any, List
 
-from fastapi import APIRouter, Body, Depends, HTTPException, Security
+from fastapi import APIRouter, Body, Depends, HTTPException, Security, status
 from fastapi.encoders import jsonable_encoder
 from pydantic.networks import EmailStr
 from pydantic.types import UUID4
@@ -51,7 +51,7 @@ def create_user(
     user = crud.user.get_by_email(db, email=user_in.email)
     if user:
         raise HTTPException(
-            status_code=409,
+            status_code=status.HTTP_409_CONFLICT,
             detail="The user with this username already exists in the system.",
         )
     user = crud.user.create(db, obj_in=user_in)
@@ -122,13 +122,13 @@ def create_user_open(
     """
     if not settings.USERS_OPEN_REGISTRATION:
         raise HTTPException(
-            status_code=403,
+            status_code=status.HTTP_403_FORBIDDEN,
             detail="Open user registration is forbidden on this server",
         )
     user = crud.user.get_by_email(db, email=email)
     if user:
         raise HTTPException(
-            status_code=409,
+            status_code=status.HTTP_409_CONFLICT,
             detail="The user with this username already exists in the system",
         )
     user_in = schemas.UserCreate(
@@ -174,7 +174,7 @@ def update_user(
     user = crud.user.get(db, id=user_id)
     if not user:
         raise HTTPException(
-            status_code=404,
+            status_code=status.HTTP_404_NOT_FOUND,
             detail="The user with this username does not exist in the system",
         )
     user = crud.user.update(db, db_obj=user, obj_in=user_in)

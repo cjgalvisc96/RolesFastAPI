@@ -1,4 +1,4 @@
-from typing import Generator
+from typing import Dict, Generator
 
 import pytest
 from fastapi.testclient import TestClient
@@ -14,6 +14,11 @@ from tests.utils.test_db import (
     SQLALCHEMY_TEST_DATABASE_URL,
     TestingSessionLocal,
     engine
+)
+from tests.utils.user import (
+    authentication_token_from_email,
+    get_superadmin_token_headers,
+    regular_user_email
 )
 
 
@@ -36,3 +41,16 @@ def client() -> Generator:
     app.dependency_overrides[get_db] = override_get_db
     with TestClient(app) as c:
         yield c
+
+@pytest.fixture()
+def superadmin_token_headers(client: TestClient) -> Dict[str, str]:
+    return get_superadmin_token_headers(client=client)
+
+
+@pytest.fixture()
+def normal_user_token_headers(
+    client: TestClient, db: Session
+) -> Dict[str, str]:
+    return authentication_token_from_email(
+        client=client, email=regular_user_email, db=db
+    )

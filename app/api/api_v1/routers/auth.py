@@ -4,6 +4,7 @@ from typing import Any
 from fastapi import APIRouter, Body, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
+from starlette import status
 
 from app import crud, models, schemas
 from app.api import deps
@@ -26,10 +27,13 @@ def login_access_token(
     )
     if not user:
         raise HTTPException(
-            status_code=400, detail="Incorrect email or password"
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Incorrect email or password",
         )
     elif not crud.user.is_active(user):
-        raise HTTPException(status_code=400, detail="Inactive user")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Inactive user"
+        )
     access_token_expires = timedelta(
         minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
     )
