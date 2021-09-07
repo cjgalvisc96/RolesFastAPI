@@ -37,7 +37,7 @@ def test_get_user_role_by_user_id(db: Session) -> None:
     assert user_role.user_id == user_role_2.user_id
 
 
-def xtest_update_user_role(db: Session) -> None:
+def test_update_user_role(db: Session, create_initial_db_data_test: Session) -> None:
     user_in = schemas.UserCreate(
         email=random_email(), password=random_lower_string()
     )

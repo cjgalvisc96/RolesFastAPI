@@ -2,10 +2,12 @@ from typing import Generator
 
 import pytest
 from fastapi.testclient import TestClient
+from sqlalchemy.orm.session import Session
 from sqlalchemy_utils import create_database, database_exists
 
 from app.api.deps import get_db
 from app.db.base import Base
+from app.db.init_db import init_db
 from app.main import app
 from tests.utils.overrides import override_get_db
 from tests.utils.test_db import (
@@ -25,6 +27,9 @@ def db() -> Generator:
 
     yield TestingSessionLocal()
 
+@pytest.fixture(scope="session")
+def create_initial_db_data_test(db: Session) -> None:
+    init_db(db)
 
 @pytest.fixture(scope="module")
 def client() -> Generator:
