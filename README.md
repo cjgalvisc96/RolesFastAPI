@@ -6,7 +6,6 @@
 ##### requirements
     [Docker] https://docs.docker.com/engine/install/
     [DockerCompose] https://docs.docker.com/compose/install/
-    [Mongo] https://docs.mongodb.com/manual/installation/
 
 1. Build Docker
    ```sh
