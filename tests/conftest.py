@@ -27,7 +27,7 @@ def db() -> Generator:
 
     yield TestingSessionLocal()
 
-@pytest.fixture(scope="session")
+@pytest.fixture(autouse=True)
 def create_initial_db_data_test(db: Session) -> None:
     init_db(db)
 
