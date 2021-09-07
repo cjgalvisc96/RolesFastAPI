@@ -27,7 +27,7 @@
 
 ## Unit Tests
 
-1. For run the test (see in workflow/tests/):
+1. For run the test (see in tests/*):
 
     ```sh
     >>[DirProject] docker-compose run web pytest --cov=app tests
